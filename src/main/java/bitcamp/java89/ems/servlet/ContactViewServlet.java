@@ -17,23 +17,23 @@ import bitcamp.java89.ems.vo.Contact;
 // 그래서 AbstractServlet이라는 추상 클래스를 만들어서, 
 // 이 클래스를 상속받아 간접적으로 Servlet 인터페이스를 구현하는 방식을 취한다.
 // 이 클래스를 상속받게되면 오직 service() 메서드만 만들면 되기 때문에 코드가 편리하다.
-@WebServlet("/contact/list")
-public class ContactListServlet extends AbstractServlet {
+@WebServlet("/contact/view")
+public class ContactViewServlet extends AbstractServlet {
   @Override
   public void service(ServletRequest request, ServletResponse response) throws ServletException, IOException {
     try {
       ContactMysqlDao contactDao = ContactMysqlDao.getInstance();
-      ArrayList<Contact> list = contactDao.getList();
-
-      // 웹 브라우저 쪽으로 출력할 수 있도록 출력 스트림 객체를 얻는다.
       response.setContentType("text/plain;charset=UTF-8");
       PrintWriter out = response.getWriter();
+      
+      String name = request.getParameter("name");
+      ArrayList<Contact> list = contactDao.getListByName(name);
       for (Contact contact : list) {
-        out.printf("%s, %s, %s, %s\n",
-            contact.getName(),
-            contact.getPosition(),
-            contact.getTel(),
-            contact.getEmail());
+        out.println("---------------------------");
+        out.printf("이름: %s\n", contact.getName());
+        out.printf("직위: %s\n", contact.getPosition());
+        out.printf("전화: %s\n", contact.getTel());
+        out.printf("이메일: %s\n", contact.getEmail());
       }
     } catch (Exception e) {
       throw new ServletException(e);
