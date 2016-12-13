@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>강사관리-입력폼</title>
+</head>
+<body>
+  <h1>강사 등록폼</h1>
+  <form action='add' method='POST'>
+    <table border='1'>
+      <tr><th>아이디</th><td><input name='userId' type='text' placeholder='예)hong'></td></tr>
+      <tr><th>비밀번호</th><td><input name='password' type='text' placeholder='예)1111'></td></tr>
+      <tr><th>이름</th><td><input name='name' type='text' placeholder='예)홍길동'></td></tr>
+			<tr><th>이메일</th><td><input name='email' type='text' placeholder='예)hong2@test.com'></td></tr>
+			<tr><th>전화</th><td><input name='tel' type='text' placeholder='예)010-1111-2222'></td></tr>
+      <tr><th>나이</th><td><input name='age' type='number' placeholder='예)29'></td></tr>
+      <tr><th>담당과목</th><td><input name='subject' type='text' placeholder='예)자바'></td></tr>
+      <tr><th>경력</th><td><input name='carrer' type='number' placeholder='예)10'></td></tr>
+			<tr><th>연봉</th><td><input name='salary' type='number' placeholder='예)8500'></td></tr>
+			<tr><th>주소</th><td><input name='address' type='text' placeholder='예)서울시 서초구'></td></tr>
+		</table>
+		<button type='submit'>등록</button>
+		<a href='list'>목록</a>
+  </form>
+</body>
+</html>

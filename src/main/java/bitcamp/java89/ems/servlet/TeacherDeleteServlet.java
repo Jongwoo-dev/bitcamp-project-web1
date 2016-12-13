@@ -11,31 +11,43 @@ import javax.servlet.http.HttpServletResponse;
 
 import bitcamp.java89.ems.dao.impl.TeacherMysqlDao;
 
-// 톰캣 서버가 실행할 수 있는 클래스는 반드시 Servlet 규격에 맞추어 제작해야 한다.
-// 그러나 Servlet 인터페이스의 메서드가 많아서 구현하기 번거롭다.
-// 그래서 AbstractServlet이라는 추상 클래스를 만들어서, 
-// 이 클래스를 상속받아 간접적으로 Servlet 인터페이스를 구현하는 방식을 취한다.
-// 이 클래스를 상속받게되면 오직 service() 메서드만 만들면 되기 때문에 코드가 편리하다.
 @WebServlet("/teacher/delete")
 public class TeacherDeleteServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    
+    String userId = request.getParameter("userId");
+    
+    response.setHeader("Refresh", "1;url=list");
+    response.setContentType("text/html;charset=UTF-8");
+    PrintWriter out = response.getWriter();
+    
+    out.println("<!DOCTYPE html>");
+    out.println("<html>");
+    out.println("<head>");
+    out.println("<meta charset='UTF-8'>");
+    out.println("<title>강사관리-삭제</title>");
+    out.println("</head>");
+    out.println("<body>");
+    out.println("<h1>삭제 결과</h1>");
+    
     try {
       TeacherMysqlDao teacherDao = TeacherMysqlDao.getInstance();
-      response.setContentType("text/plain;charset=UTF-8");
-      PrintWriter out = response.getWriter();
       
-      if (!teacherDao.existUserId(request.getParameter("userId"))) {
-        out.println("해당 데이터가 없습니다.");
-        return;
+      if (!teacherDao.existUserId(userId)) {
+        throw new Exception("해당하는 유저아이디를 찾지 못했습니다.");
       }
 
       teacherDao.delete(request.getParameter("userId"));
-      out.println("해당 데이터를 삭제 완료하였습니다.");
+      out.println("<p>삭제하였습니다.</p>");
+      
     } catch (Exception e) {
-      throw new ServletException(e);
+      out.printf("<p>%s</p>\n", e.getMessage());
     }
+    
+    out.println("</body>");
+    out.println("</html>");
   }
 }

@@ -85,6 +85,38 @@ public class TeacherMysqlDao implements TeacherDao {
     }
     return list;
   }
+  
+  public Teacher getDetail(String userId) throws Exception {
+    Teacher teacher = null;
+    Connection con = ds.getConnection();  // 커넥션풀에서 한 개의 Connection 객체를 임대한다.
+    try (
+        PreparedStatement stmt = con.prepareStatement(
+            "select userid, password, name, tel, email, age, subject, carrer, salary, address"
+            + " from ex_teachers where userid=?"); ){
+      stmt.setString(1, userId);
+      ResultSet rs = stmt.executeQuery();
+
+      if (rs.next()) { // 서버에서 레코드 한 개를 가져왔다면,
+        teacher = new Teacher();
+        teacher.setUserId(rs.getString("userid"));
+        teacher.setPassword(rs.getString("password"));
+        teacher.setName(rs.getString("name"));
+        teacher.setTel(rs.getString("tel"));
+        teacher.setEmail(rs.getString("email"));
+        teacher.setAge(rs.getInt("age"));
+        teacher.setSubject(rs.getString("subject"));
+        teacher.setCarrer(rs.getInt("carrer"));
+        teacher.setSalary(rs.getInt("salary"));
+        teacher.setAddress(rs.getString("address"));
+
+      }
+      rs.close();
+      
+    } finally {
+      ds.returnConnection(con);
+    }
+    return teacher;
+  }
 
   public void insert(Teacher teacher) throws Exception {
     Connection con = ds.getConnection();  // 커넥션풀에서 한 개의 Connection 객체를 임대한다.

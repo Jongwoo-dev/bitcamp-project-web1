@@ -27,11 +27,28 @@ public class TeacherListServlet extends HttpServlet {
     try {
       TeacherMysqlDao teacherDao = TeacherMysqlDao.getInstance();
       ArrayList<Teacher> list = teacherDao.getList();
-      response.setContentType("text/plain;charset=UTF-8");
+      response.setContentType("text/html;charset=UTF-8");
       PrintWriter out = response.getWriter();
       
+      out.println("<!DOCTYPE html>");
+      out.println("<html>");
+      out.println("<head>");
+      out.println("<meta charset='UTF-8'>");
+      out.println("<title>강사관리-목록</title>");
+      out.println("</head>");
+      out.println("<body>");
+      out.println("<h1>강사 정보</h1>");
+      out.println("<a href='form.html'>추가</a><br>");
+      out.println("<table border='1'>");
+      out.println("<tr>");
+      out.println("<th>아이디</th><th>비밀번호</th><th>이름</th><th>이메일</th><th>전화번호</th>"
+          + "<th>나이</th><th>담당과목</th><th>경력</th><th>연봉</th><th>주소</th>");
+      out.println("</tr>");
+      
       for (Teacher teacher : list) {
-        out.printf("%s, %s, %s, %s, %s, %d, %s, %d, %d, %s\n",
+        out.println("<tr>");
+        out.printf("<td><a href='view?userId=%1$s'>%s</a></td><td>%s</td><td>%s</td><td>%s</td><td>%s</td>"
+            + "<td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td>\n",
             teacher.getUserId(),
             teacher.getPassword(),
             teacher.getName(),
@@ -42,7 +59,13 @@ public class TeacherListServlet extends HttpServlet {
             teacher.getCarrer(),
             teacher.getSalary(),
             teacher.getAddress());
+        
+        out.println("</tr>");
       }
+      out.println("</table>");
+      out.println("</body>");
+      out.println("</html>");
+      
     } catch (Exception e) {
       throw new ServletException(e);
     }
