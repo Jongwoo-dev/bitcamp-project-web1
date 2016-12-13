@@ -22,21 +22,37 @@ public class ContactDeleteServlet extends HttpServlet {
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    
+    String email = request.getParameter("email");
+    
+    response.setHeader("Refresh", "1;url=list");
+    response.setContentType("text/html;charset=UTF-8");
+    PrintWriter out = response.getWriter();
+    
+    out.println("<!DOCTYPE html>");
+    out.println("<html>");
+    out.println("<head>");
+    out.println("<meta charset='UTF-8'>");
+    out.println("<title>연락처관리-삭제</title>");
+    out.println("</head>");
+    out.println("<body>");
+    out.println("<h1>삭제 결과</h1>");
+    
     try {
       ContactMysqlDao contactDao = ContactMysqlDao.getInstance();
-      response.setContentType("text/plain;charset=UTF-8");
-      PrintWriter out = response.getWriter();
       
-      // contact/delete?email=hong@test.com
-      if (!contactDao.existEmail(request.getParameter("email"))) {
-        out.println("해당 데이터가 없습니다.");
-        return;
+      if (!contactDao.existEmail(email)) {
+        throw new Exception("이메일을 찾지 못했습니다.");
       }
 
       contactDao.delete(request.getParameter("email"));
-      out.println("해당 데이터를 삭제 완료하였습니다.");
+      out.println("<p>삭제하였습니다.</p>");
+      
     } catch (Exception e) {
-      throw new ServletException(e);
+      out.printf("<p>%s</p>\n", e.getMessage());
     }
+    
+    out.println("</body>");
+    out.println("</html>");
   }
 }

@@ -17,28 +17,45 @@ public class ContactAddServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
   
   @Override
-  protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    
+    request.setCharacterEncoding("UTF-8");
+    
+    Contact contact = new Contact();
+    contact.setName(request.getParameter("name"));
+    contact.setPosition(request.getParameter("position"));
+    contact.setTel(request.getParameter("tel"));
+    contact.setEmail(request.getParameter("email"));
+    
+    response.setHeader("Refresh", "1;url=list");
+    
+    response.setContentType("text/html;charset=UTF-8");
+    PrintWriter out = response.getWriter();
+    
+    out.println("<!DOCTYPE html>");
+    out.println("<html>");
+    out.println("<head>");
+    out.println("<meta charset='UTF-8'>");
+    out.println("<title>연락처관리-등록</title>");
+    out.println("</head>");
+    out.println("<body>");
+    out.println("<h1>등록 결과</h1>");
+
     try {
       ContactMysqlDao contactDao = ContactMysqlDao.getInstance();
-      response.setContentType("text/plain;charset=UTF-8");
-      PrintWriter out = response.getWriter();
       
-      // contact/add?name=홍길동&position=대리&tel=111-1111&email=hong2@test.com
-      if (contactDao.existEmail(request.getParameter("email"))) {
-        out.println("같은 이메일이 존재합니다. 등록을 취소합니다.");
-        return;
+      if (contactDao.existEmail(contact.getEmail())) {
+        throw new Exception("같은 이메일이 존재합니다. 등록을 취소합니다.");
       }
-      Contact contact = new Contact();
-      contact.setName(request.getParameter("name"));
-      contact.setPosition(request.getParameter("position"));
-      contact.setTel(request.getParameter("tel"));
-      contact.setEmail(request.getParameter("email"));
-
+      
       contactDao.insert(contact);
-      out.println("등록하였습니다.");
+      out.println("<p>등록하였습니다.</p>");
       
     } catch (Exception e) {
-      throw new ServletException(e);
+      out.printf("<p>%s</p>\n", e.getMessage());
     }
+    
+    out.println("</body>");
+    out.println("</html>");
   }
 }
